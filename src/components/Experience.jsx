@@ -24,8 +24,7 @@ export const Experience = (props) => {
 
   const cameraPositionX = useMotionValue(0); // Initialize with 0
   const cameraLookAtX = useMotionValue(0); // Initialize with 0
-const [activeOverlay, setActiveOverlay] = useState(null); 
-
+const [activeOverlay, setActiveOverlay] = useState([]); // ← always array
 
 
 

@@ -28,6 +28,7 @@ const OverlayItem = ({
   id,                    
   activeOverlay,
   setActiveOverlay,
+  device,
   ...props
 }) => {
   const { camera, gl } = useThree();
@@ -39,8 +40,11 @@ const [isClickable, setIsClickable] = useState(true); //prevent bug when going r
 
 const [windowPos, setWindowPos] = useState({ x: 0, y: 0 });
 const overlayRef = useRef(null); 
-const isActive = activeOverlay === id;
-  const isAnyOverlayOpen = activeOverlay !== null;
+
+ const isMobileOrTablet = device === "mobile" || device === "tablet";
+
+const isActive = activeOverlay.includes(id);
+const isAnyOpen = activeOverlay.length > 0;
 
 
 const htmlOffset = useRef({ x: 0, y: 0 });
@@ -105,27 +109,31 @@ useEffect(() => {
 
 
 const handleButtonClick = (e) => {
+  if (!isClickable) return;
   e.stopPropagation();
-setActiveOverlay(id);        // ← Now only ONE can be active
+
+  if (isMobileOrTablet) {
+    // Mobile: only one at a time
+    setActiveOverlay([id]);
+  } else {
+    // Desktop: allow multiple
+    setActiveOverlay(prev => {
+      if (prev.includes(id)) return prev;
+      return [...prev, id];
+    });
+  }
+
+  setShowContent(true);
+  setIsClickable(false);
 };
-useEffect(() => {
-  if (!showContent || !overlayRef.current) return;
-
-  const el = overlayRef.current;
-  const rect = el.getBoundingClientRect();
-
-  setWindowPos({
-    x: window.innerWidth / 2 - rect.width / 2,
-    y: window.innerHeight / 2 - rect.height / 2,
-  });
-}, [showContent]);
-
 const handleResetClick = (e) => {
   e.stopPropagation();
-setActiveOverlay(null);      
+
+  setActiveOverlay(prev => prev.filter(openId => openId !== id));
+
+  setShowContent(false);
+  setTimeout(() => setIsClickable(true), 300); // re-enable after animation
 };
-
-
 const handleDragStart = (e) => {
   e.stopPropagation();
   isDragging.current = true;
@@ -228,7 +236,8 @@ useEffect(() => {
     e.stopPropagation();
     console.log("Test Button Clicked!");
   };
-  const showButton = !isAnyOverlayOpen;
+
+const showViewButton = isMobileOrTablet ? !isAnyOpen : !isActive;
 
   return (
     <group
@@ -280,7 +289,7 @@ portal={{ current: portalRoot.current }}
 
                 "
 
-                  onPointerDown={handleDragStart}
+                  onPointerDown={isVisible ? handleDragStart : undefined}
 
 
                     style={{
@@ -289,10 +298,10 @@ portal={{ current: portalRoot.current }}
                     top: windowPos.y,
                     transition: isDragging.current ? "none" : "transform 0.2s ease",
                     cursor: "default",
-                    pointerEvents: "auto",
+                    pointerEvents: isVisible ? "auto" : "none",  
                      userSelect: "none",
                      WebkitUserSelect: "none",
-                     zIndex: "100",
+                    zIndex: 1000 + activeOverlay.indexOf(id), 
             }}
           >
 
@@ -311,6 +320,7 @@ portal={{ current: portalRoot.current }}
 
         <div className="p-10 flex flex-col items-center justify-center gap-10 pt-1">
           <button
+          onClick={() => alert("More details coming soon!")}
           type="submit"
           className="flex justify-center top-96 gap-2 items-center mx-auto shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-4 py-2 overflow-hidden border-2 rounded-full group"
           style={{ pointerEvents: "auto" }}
@@ -339,12 +349,12 @@ portal={{ current: portalRoot.current }}
       </div>
   )}
  
-     {!isAnyOverlayOpen && (
+     {showViewButton && (
       <div className="flex items-center justify-center">
     <div 
       className="relative group"
       style={{
-        pointerEvents: isClickable ? "auto" : "none",  // Blocks ALL interaction (hover + click)
+        pointerEvents: isVisible && isClickable ? "auto" : "none",  // ← Add isVisible for extra safety
         opacity: isClickable ? 1 : 0.4,
         transition: "opacity 0.4s ease",
       }}
@@ -499,6 +509,9 @@ export function Office({ section, menuOpened, isDay, setIsAnimating, setCameraTa
     return () => window.removeEventListener("resize", check);
   }, []);
 
+
+
+
   const overlayConfig = {
     balcony: {
       distanceFactor: { desktop: 15, tablet: 24, mobile: 28 },
@@ -518,32 +531,56 @@ export function Office({ section, menuOpened, isDay, setIsAnimating, setCameraTa
     },
   };
 
+
   const getOverlayProps = (id) => {
     const cfg = overlayConfig[id] || {
       distanceFactor: { desktop: 15, tablet: 25, mobile: 25 },
       position: { desktop: [0, 0, 0], tablet: [0, 0, 0], mobile: [0, 0, 0] },
     };
 
-    const isMobile = device === "mobile";
-    const isTablet = device === "tablet";
-
     return {
-      distanceFactor: isMobile || isTablet
-        ? cfg.distanceFactor[isMobile ? "mobile" : "tablet"]
-        : cfg.distanceFactor.desktop,
-
-      position: isMobile
-        ? cfg.position.mobile
-        : isTablet
-          ? cfg.position.tablet
+      distanceFactor:
+        device === "mobile" || device === "tablet"
+          ? cfg.distanceFactor[device]
+          : cfg.distanceFactor.desktop,
+      position:
+        device === "mobile" || device === "tablet"
+          ? cfg.position[device]
           : cfg.position.desktop,
     };
   };
 
-  // Now these are defined inside Office → safe to use!
   const balcony = getOverlayProps("balcony");
   const driveway = getOverlayProps("driveway");
 
+
+  //  /* -------------------------------------------------------------
+  //  * MULTI-OVERLAY LOGIC
+  //  * ------------------------------------------------------------- */
+
+  const isMobileOrTablet = device === "mobile" || device === "tablet";
+
+  const openOverlay = (id) => {
+    if (isMobileOrTablet) {
+      setActiveOverlay([id]);
+    } else {
+      setActiveOverlay((prev) => {
+        if (!Array.isArray(prev)) prev = [];
+        return prev.includes(id) ? prev : [...prev, id];
+      });
+    }
+  };
+
+  const closeOverlay = (id) => {
+    if (isMobileOrTablet) {
+      setActiveOverlay([]);
+    } else {
+      setActiveOverlay((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.filter((o) => o !== id);
+      });
+    }
+  };
 
   return (
     <group ref={group} {...props} dispose={null} position={[-11, -4, -2]} rotation={[0, 0, 0]} scale={0.01}>
@@ -615,8 +652,11 @@ export function Office({ section, menuOpened, isDay, setIsAnimating, setCameraTa
         section={section}
         id="balcony"                    
           key="balcony"
+    setActiveOverlay={setActiveOverlay}
     activeOverlay={activeOverlay}
-  setActiveOverlay={setActiveOverlay}
+ openOverlay={openOverlay}
+          closeOverlay={closeOverlay}
+          device={device}  
           rotation={[Math.PI / 2, -Math.PI / 2, 0]}
          position={[0, 0, 0]}
          distanceFactor={balcony.distanceFactor}
@@ -725,10 +765,12 @@ export function Office({ section, menuOpened, isDay, setIsAnimating, setCameraTa
     key="driveway"
     position={[0, 0, 0]}       
     rotation={[Math.PI / 2, -Math.PI / 2, 0]}
-    
+    setActiveOverlay={setActiveOverlay}
     distanceFactor={driveway.distanceFactor}          
     activeOverlay={activeOverlay}
-  setActiveOverlay={setActiveOverlay}
+    openOverlay={openOverlay}
+    closeOverlay={closeOverlay}
+    device={device} 
     title="Driveway Cleaning"
     description="Oil stains + power wash"
     price="300-600"

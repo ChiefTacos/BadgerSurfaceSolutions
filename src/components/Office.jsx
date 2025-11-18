@@ -501,7 +501,7 @@ export function Office({ section, menuOpened, isDay, setIsAnimating, setCameraTa
 
   const overlayConfig = {
     balcony: {
-      distanceFactor: { desktop: 15, tablet: 24, mobile: 24 },
+      distanceFactor: { desktop: 15, tablet: 24, mobile: 28 },
       position: {
         desktop: [-3004.128, 508.8, 2],
         tablet:  [-228.117, 406.956, 1.194],   // customize as needed

@@ -422,7 +422,7 @@ return (
                         
                             <div className="flex flex-col text-white">
                                 <span className="font-bold pb-3 pt-2 c3 text-xl md:text-2xl lg:text-3xl border-slate-950 border-b-4 border-t-4 text-teal-300">
-                            Sucking bootty All day
+                             All day All NIGHT
                                 </span>
                                 <div className="flex flex-col gap-2 mt-6">
                                     <div className="flex items-baseline gap-4">

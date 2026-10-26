@@ -285,9 +285,11 @@ const FreeQuoteButton = ({ onClick, isClickable }) => {
       <button
         className="relative inline-block p-px font-bold text-white rounded-2xl shadow-2xl cursor-pointer transition-all duration-300 ease-in-out lg:hover:scale-105 lg:active:scale-100
         hover:scale-110 active:scale-105 
-                   bg-gradient-to-r  from-cyan-400 via-blue-500 to-teal-600
-                   hover:from-cyan-500 hover:via-blue-400 hover:to-teal-500
-                   shadow-blue-700 hover:shadow-teal-500"
+                    bg-transparent
+  hover:bg-gradient-to-r hover:from-cyan-400 hover:via-blue-500 hover:to-teal-600
+  active:bg-gradient-to-r active:from-cyan-400 active:via-blue-500 active:to-teal-600
+  lg:hover:from-cyan-500 lg:hover:via-blue-400 lg:hover:to-teal-500
+  shadow-blue-700 hover:shadow-teal-500"
         onClick={onClick}
         onPointerDown={(e) => e.stopPropagation() }
         
@@ -609,7 +611,7 @@ const ServiceWindowButton = ({ onClick, isClickable }) => {
                             <div className="card flex" >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z" /></svg>
                             <div className="card__content">
-                              <p className="card__title">I love Ass</p>
+                              <p className="card__title">I love YOU</p>
                               <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
                             </div>
                           </div>
@@ -619,7 +621,7 @@ const ServiceWindowButton = ({ onClick, isClickable }) => {
                           <div className="card hidden lg:flex" >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z" /></svg>
                             <div className="card__content">
-                              <p className="card__title">I love Ass</p>
+                              <p className="card__title">I love You</p>
                               <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
                             </div>
                           </div>
@@ -659,7 +661,7 @@ const ServiceWindowButton = ({ onClick, isClickable }) => {
                           <div className="card hidden lg:flex" >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z" /></svg>
                             <div className="card__content">
-                              <p className="card__title">Eating Ass</p>
+                              <p className="card__title">HOWDY</p>
                               <p className="card__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
                             </div>
                           </div>
@@ -1117,7 +1119,7 @@ const [fullyOpen, setFullyOpen] = useState(false);
          position={[0, 0, 0]}
          distanceFactor={balcony.distanceFactor}
           title="Gutter Cleaning"
-          description="Big Fat Ass scrub"
+          description="Big Fat scrub"
           price="75-200"
           bgColor="bg-yellow-500"
 src="/textures/sexyCleaning.jpeg"
@@ -1405,7 +1407,7 @@ src="/textures/sexyCleaning.jpeg"
     rotation={[Math.PI / 2, -Math.PI / 2, 0]}
     position={[0, 0, 0]}
     distanceFactor={contact.distanceFactor}
-    title="Introseduction"
+    title="Introduction"
     description="Michael Murray"
     price="ssn 3938 2938 298"
     bgColor="bg-yellow-500"
